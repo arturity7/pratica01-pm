@@ -18,34 +18,42 @@ public class Aluno {
         lealdade = 0;
         casa = "";
     }
-    public Pessoa(String nome, int idade, int coragem, int inteligencia, int ambicao, int lealdade){
+    public Aluno(String nome, int idade, int coragem, int inteligencia, int ambicao, int lealdade){
         this.nome = nome;
         this.idade = idade;
         this.coragem = coragem;
         this.inteligencia = inteligencia;
         this.ambicao = ambicao;
         this.lealdade = lealdade;
-        CalcularCasa();
+        calcularCasa();
     }
-    public String exibirInformacoes(){
-        return casa;
+    public void exibirInformacoes(){
+        System.out.println("Nome: " + nome);
+        System.out.println("Idade: " + idade);
+        System.out.println("Coragem: " + coragem);
+        System.out.println("Inteligencia: " + inteligencia);
+        System.out.println("Ambicao: " + ambicao);
+        System.out.println("Lealdade: " + lealdade);
+        System.out.println("Casa: " + casa);
     }
-    public int CalcularCasa(){
-        int grifinoria, sonserina, corvinal, lufa-lufa;
+    public void calcularCasa(){
+        double grifinoria, sonserina, corvinal, lufaLufa, maior;
 
         grifinoria = (2 * coragem) + lealdade;
-        sonserina = (2*ambicao);
-        corvinal = (2*inteligencia);
-        lufa-lufa = ((2*lealdade) + coragem)/3;
+        sonserina = (2 * ambicao);
+        corvinal = (2 * inteligencia);
+        lufaLufa = ((2 * lealdade) + coragem) / 3.0;
 
-        if(grifinoria > sonserina && grifinoria > corvinal && grifinoria > lufa-lufa){
-            casa = grifinoria;
-        } else if(sonserina > grifinoria && sonserina > corvinal && sonserina > lufa-lufa){
-            casa = sonserina;
-        } else if(corvinal > grifinoria && corvinal > sonserina && corvinal > lufa-lufa){
-            casa = corvinal; 
-        } else if(lufa-lufa > grifinoria && lufa-lufa > sonserina && lufa-lufa > corvinal){
-            casa = lufa-lufa;
+        maior = Math.max(Math.max(grifinoria, sonserina), Math.max(corvinal, lufaLufa));
+
+        if(maior == grifinoria){
+            casa = "Grifinória";
+        } else if(maior == sonserina){
+            casa = "Sonserina";
+        } else if(maior == corvinal){
+            casa = "Corvinal";
+        } else {
+            casa = "Lufa-Lufa";
         }
     }
 
@@ -58,7 +66,7 @@ public class Aluno {
     public int getIdade(){
         return idade;
     }
-    public void setIdade(int iadde){
+    public void setIdade(int idade){
         this.idade = idade;
     }
     public int getCoragem(){
@@ -84,5 +92,11 @@ public class Aluno {
     }
     public void setLealdade(int lealdade){
         this.lealdade = lealdade;
+    }
+    public String getCasa(){
+        return casa;
+    }
+    public void setCasa(String casa){
+        this.casa = casa;
     }
 }
