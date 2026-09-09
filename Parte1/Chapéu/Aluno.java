@@ -1,4 +1,4 @@
-package Chapéu;
+package Parte1.Chapéu;
 
 public class Aluno {
     private String nome;
