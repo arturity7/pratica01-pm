@@ -1,4 +1,4 @@
-package Parte1.Chapéu;
+package Chapéu;
 
 import java.util.Scanner; 
 
