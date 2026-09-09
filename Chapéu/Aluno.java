@@ -1,8 +1,6 @@
 package Chapéu;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 
 public class Aluno {
     private String nome;
@@ -58,20 +56,18 @@ public class Aluno {
     }
 
     public void calcularCasa(){
-        double grifinoria, sonserina, corvinal, lufaLufa, maior;
+        double grifinoria, sonserina, corvinal, lufaLufa;
 
         grifinoria = (2 * coragem) + lealdade;
         sonserina = (2 * ambicao);
         corvinal = (2 * inteligencia);
         lufaLufa = ((2 * lealdade) + coragem) / 3.0;
 
-        maior = Math.max(Math.max(grifinoria, sonserina), Math.max(corvinal, lufaLufa));
-
-        if(maior == grifinoria){
+        if(grifinoria >= sonserina && grifinoria >= corvinal && grifinoria >= lufaLufa){
             casa = "Grifinória";
-        } else if(maior == sonserina){
+        } else if(sonserina >= corvinal && sonserina >= lufaLufa){
             casa = "Sonserina";
-        } else if(maior == corvinal){
+        } else if(corvinal >= lufaLufa){
             casa = "Corvinal";
         } else {
             casa = "Lufa-Lufa";
@@ -82,7 +78,17 @@ public class Aluno {
         if(dataNascimento == null){
             return 0;
         }
-        return Period.between(dataNascimento, LocalDate.now()).getYears();
+
+        LocalDate hoje = LocalDate.now();
+        int anos = hoje.getYear() - dataNascimento.getYear();
+
+        if(hoje.getMonthValue() < dataNascimento.getMonthValue()){
+            anos = anos - 1;
+        } else if(hoje.getMonthValue() == dataNascimento.getMonthValue() && hoje.getDayOfMonth() < dataNascimento.getDayOfMonth()){
+            anos = anos - 1;
+        }
+
+        return anos;
     }
 
     public boolean verificarMaioridadeMagica(){
@@ -94,27 +100,32 @@ public class Aluno {
     }
 
     public String gerarNomeUsuario(){
-        if(nome.isBlank()){
+        if(nome.equals("")){
             return "";
         }
-        String partes[] = nome.trim().split("\\s+");
+
+        String partes[] = nome.split(" ");
         String usuario = "" + partes[0].charAt(0);
+
         for(int i = 1; i < partes.length; i++){
             usuario = usuario + partes[i];
         }
+
         return removerAcentos(usuario.toLowerCase());
     }
 
     public String gerarCodigoMatricula(int posicao){
-        if(nome.isBlank()){
+        if(nome.equals("")){
             return "";
         }
-        String partes[] = nome.trim().split("\\s+");
+
+        String partes[] = nome.split(" ");
         String iniciais = "";
+
         for(int i = 0; i < partes.length; i++){
             iniciais = iniciais + partes[i].charAt(0);
         }
-        iniciais = removerAcentos(iniciais.toUpperCase());
+        iniciais = removerAcentos(iniciais.toLowerCase()).toUpperCase();
 
         String numero = "" + posicao;
         if(posicao < 10){
@@ -126,32 +137,32 @@ public class Aluno {
     }
 
     public boolean verificarCasa(String casaInformada){
-        if(casaInformada == null){
-            return false;
-        }
-        return removerAcentos(casa.toLowerCase()).equals(removerAcentos(casaInformada.trim().toLowerCase()));
+        String casaDoAluno = removerAcentos(casa.toLowerCase());
+        String casaDigitada = removerAcentos(casaInformada.trim().toLowerCase());
+        return casaDoAluno.equals(casaDigitada);
     }
 
     public boolean verificarPresencaPalavra(String palavra){
-        if(palavra == null || palavra.isBlank()){
+        if(palavra.trim().equals("")){
             return false;
         }
+
         String sobrenome = removerAcentos(getSobrenome().toLowerCase());
-        return sobrenome.contains(removerAcentos(palavra.trim().toLowerCase()));
+        String busca = removerAcentos(palavra.trim().toLowerCase());
+        return sobrenome.contains(busca);
     }
 
     public String getSobrenome(){
-        if(nome.isBlank()){
-            return "";
-        }
-        String partes[] = nome.trim().split("\\s+");
+        String partes[] = nome.split(" ");
         String sobrenome = "";
+
         for(int i = 1; i < partes.length; i++){
             if(i > 1){
                 sobrenome = sobrenome + " ";
             }
             sobrenome = sobrenome + partes[i];
         }
+
         return sobrenome;
     }
 
@@ -159,39 +170,45 @@ public class Aluno {
         if(dataNascimento == null){
             return "Nao informada";
         }
-        return dataNascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        String dia = "" + dataNascimento.getDayOfMonth();
+        String mes = "" + dataNascimento.getMonthValue();
+
+        if(dataNascimento.getDayOfMonth() < 10){
+            dia = "0" + dia;
+        }
+        if(dataNascimento.getMonthValue() < 10){
+            mes = "0" + mes;
+        }
+
+        return dia + "/" + mes + "/" + dataNascimento.getYear();
     }
 
     private String padronizarNome(String texto){
-        if(texto == null || texto.isBlank()){
-            return "";
-        }
-        String partes[] = texto.trim().toLowerCase().split("\\s+");
+        String partes[] = texto.trim().toLowerCase().split(" ");
         String padronizado = "";
+
         for(int i = 0; i < partes.length; i++){
-            if(i > 0){
-                padronizado = padronizado + " ";
+            if(partes[i].length() > 0){
+                if(padronizado.length() > 0){
+                    padronizado = padronizado + " ";
+                }
+                padronizado = padronizado + partes[i].substring(0, 1).toUpperCase() + partes[i].substring(1);
             }
-            padronizado = padronizado + partes[i].substring(0, 1).toUpperCase() + partes[i].substring(1);
         }
+
         return padronizado;
     }
 
     private String removerAcentos(String texto){
-        String semAcento = texto;
-        semAcento = semAcento.replace("á", "a").replace("à", "a").replace("ã", "a").replace("â", "a");
-        semAcento = semAcento.replace("é", "e").replace("ê", "e");
-        semAcento = semAcento.replace("í", "i");
-        semAcento = semAcento.replace("ó", "o").replace("ô", "o").replace("õ", "o");
-        semAcento = semAcento.replace("ú", "u");
-        semAcento = semAcento.replace("ç", "c");
-        semAcento = semAcento.replace("Á", "A").replace("À", "A").replace("Ã", "A").replace("Â", "A");
-        semAcento = semAcento.replace("É", "E").replace("Ê", "E");
-        semAcento = semAcento.replace("Í", "I");
-        semAcento = semAcento.replace("Ó", "O").replace("Ô", "O").replace("Õ", "O");
-        semAcento = semAcento.replace("Ú", "U");
-        semAcento = semAcento.replace("Ç", "C");
-        return semAcento;
+        String limpo = texto;
+        limpo = limpo.replace("á", "a").replace("ã", "a").replace("â", "a");
+        limpo = limpo.replace("é", "e").replace("ê", "e");
+        limpo = limpo.replace("í", "i");
+        limpo = limpo.replace("ó", "o").replace("õ", "o");
+        limpo = limpo.replace("ú", "u");
+        limpo = limpo.replace("ç", "c");
+        return limpo;
     }
 
     public String getNome(){
