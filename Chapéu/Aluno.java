@@ -1,4 +1,4 @@
-package Parte1.Chapéu;
+package Chapéu;
 
 public class Aluno {
     private String nome;
@@ -8,6 +8,8 @@ public class Aluno {
     private int ambicao;
     private int lealdade;
     private String casa; 
+   
+
 
     public Aluno(){
         nome = "";
